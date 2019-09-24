@@ -44,5 +44,3 @@ end
 bp = @breakpoint eg3()
 
 Cassette.recurse(MixModeDebugCtx(), eg1)
-
-Debugger.@run eg3()
