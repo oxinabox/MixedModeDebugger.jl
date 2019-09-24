@@ -3,6 +3,14 @@ uuid = "363b73cf-3c9c-4803-b200-4b032d6ece30"
 authors = ["Lyndon White"]
 version = "0.1.0"
 
+[deps]
+Cassette = "7057c7e9-c182-5462-911a-8362d720325c"
+Debugger = "31a5f54b-26ea-5ae9-a837-f05ce5417438"
+JuliaInterpreter = "aa1ae85d-cabe-5617-a682-6adf51b2e16a"
+MagneticReadHead = "63dd013e-5414-5e51-b21a-a24e12ed54cf"
+OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
+Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
+
 [compat]
 julia = "1"
 
