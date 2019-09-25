@@ -63,7 +63,6 @@ setup_overdubs()
 Cassette.recurse(MixModeDebugCtx(), eg1)
 
 ##############
-using BenchmarkTools
 
 function summer(A)
    s = zero(eltype(A))
@@ -72,3 +71,20 @@ function summer(A)
    end
    return s
 end
+
+function run_mm(f, args)
+    setup_overdubs()
+    Cassette.recurse(MixModeDebugCtx(), f, args)
+end
+const x=rand(10_000)
+@time summer(x)
+@time summer(x)
+
+@time Debugger.@run summer(x)
+@time Debugger.@run summer(x)
+
+@time MagneticReadHead.@run summer(x)
+@time MagneticReadHead.@run summer(x)
+
+@time run_mm(summer, x)
+@time run_mm(summer, x)
