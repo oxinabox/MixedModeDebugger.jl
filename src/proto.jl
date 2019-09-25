@@ -38,25 +38,20 @@ function setup_overdubs(breakpoints=JuliaInterpreter._breakpoints)
     end
 end
 
+
 function create_overdub(bp)
     ft = MagneticReadHead.functiontypeof(bp.f)
     #TODO: select based on all the method sig info, not just the function
-    @eval function Cassette.overdub(::MixModeDebugCtx, f::$ft, args...)
-        Core.println("-- begin interpretting")
-        try
-            # We wrap the call in a thunk before invoking it so that Debugger.jl
-            # can break on the call itself, if required.
-            # If we knew for sure would break then could use @enter
-            # TODO: remove this, but accessing Debugger internals for doing this
-            thunk() = f(args...)
-            Debugger.@run thunk()
-        finally
-            Core.println("-- end interpretting")
-        end
+    @eval @inline function Cassette.overdub(::MixModeDebugCtx, f::$ft, args...)
+        # We wrap the call in a thunk before invoking it so that Debugger.jl
+        # can break on the call itself, if required.
+        # If we knew for sure would break then could use @enter
+        # TODO: remove this, but accessing Debugger internals for doing this
+        thunk() = f(args...)
+        return Debugger.@run thunk()
     end
 end
 
-methodswith(typeof(eg3))
 
 bp = @breakpoint eg3()
 setup_overdubs()
