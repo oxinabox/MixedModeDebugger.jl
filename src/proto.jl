@@ -4,31 +4,22 @@ pkg"activate ."
 #---
 
 using Cassette
-using JuliaInterpreter: JuliaInterpreter, BreakpointSignature
+using JuliaInterpreter: JuliaInterpreter, BreakpointSignature, BreakpointRef
 using MagneticReadHead
 using Debugger
+using Dates
 
-#---
-
-function eg1()
-    println("1a")
-    eg2()
-    println("1b")
+using JuliaInterpreter: Frame, enter_call, get_return
+@inline function run_interpretted(f, args...; kwargs...)
+    fr = enter_call(f, args...)
+    cmd = :c
+    while true
+        ret = JuliaInterpreter.debug_command(JuliaInterpreter.finish_and_return!, fr, cmd)
+        ret == nothing && break
+        fr, pc = ret
+    end
+    return get_return(fr)
 end
-function eg2()
-    println("  2a")
-    eg3()
-    println("  2b")
-end
-function eg3()
-    x=1+1+1
-    print("    ")
-    println(x)
-end
-eg1()
-
-
-#---
 
 Cassette.@context MixModeDebugCtx
 
@@ -43,43 +34,60 @@ function create_overdub(bp)
     ft = MagneticReadHead.functiontypeof(bp.f)
     #TODO: select based on all the method sig info, not just the function
     @eval @inline function Cassette.overdub(::MixModeDebugCtx, f::$ft, args...)
-        # We wrap the call in a thunk before invoking it so that Debugger.jl
-        # can break on the call itself, if required.
-        # If we knew for sure would break then could use @enter
-        # TODO: remove this, but accessing Debugger internals for doing this
-        thunk() = f(args...)
-        return Debugger.@run thunk()
+        run_interpretted(f, args...)
     end
 end
 
 
-bp = @breakpoint eg3()
-setup_overdubs()
-Cassette.recurse(MixModeDebugCtx(), eg1)
-
-##############
-
-function summer(A)
-   s = zero(eltype(A))
-   for a in A
-       s += a
-   end
-   return s
-end
-
-function run_mm(f, args)
-    setup_overdubs()
+function run_mixedmode(f, args)
     Cassette.recurse(MixModeDebugCtx(), f, args)
 end
-const x=rand(10_000)
-@time summer(x)
-@time summer(x)
+##############
 
-@time Debugger.@run summer(x)
-@time Debugger.@run summer(x)
+using Base: gc_num, time_ns, GC_Diff, gc_alloc_count, time_print, show_unquoted
+macro time_trial(expr)
+    run = quote
+        GC.gc()
+        local stats = gc_num()
+        local elapsedtime = time_ns()
+        local val = $(esc(expr))
+        elapsedtime = time_ns() - elapsedtime
+        local diff = GC_Diff(gc_num(), stats)
+        time_print(elapsedtime, diff.allocd, diff.total_time,
+                   gc_alloc_count(diff))
+        println()
+    end
 
-@time MagneticReadHead.@run summer(x)
-@time MagneticReadHead.@run summer(x)
+    show_op = :(println($(sprint(show_unquoted, expr))))
 
-@time run_mm(summer, x)
-@time run_mm(summer, x)
+    return quote
+        $show_op
+        print(" - 1st Run: ")
+        $run
+        print(" - 2nd Run: ")
+        $run
+        print(" - 3nd Run: ")
+        $run
+        println()
+    end
+end
+
+########################################
+
+# Setup:
+function resetup()
+    # Reinclude so that it recompiles
+    include("../test/demo_funs.jl")
+    JuliaInterpreter.remove()
+    @breakpoint exp(1.0)
+    setup_overdubs()  # for MixedModeDebugger
+end
+
+const x = rand(1_000, 500)
+# Timing
+resetup()
+@time_trial winter(x)
+resetup()
+@time_trial run_interpretted(winter, x)
+resetup()
+@time_trial run_mixedmode(winter, x)
