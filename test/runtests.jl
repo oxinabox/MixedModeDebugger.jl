@@ -2,5 +2,7 @@ using MixedModeDebugger
 using Test
 
 @testset "MixedModeDebugger.jl" begin
-    # Write your own tests here.
+    @testset "$file" for file in ("overdub.jl",)
+        include(file)
+    end
 end
