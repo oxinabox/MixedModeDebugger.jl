@@ -8,5 +8,8 @@ using MixedModeDebugger: make_interpretted_mode_overdub
         # these should not error.
         @test make_interpretted_mode_overdub(@which +(1)) isa Any
         @test make_interpretted_mode_overdub(@which +(1,2)) isa Any
+
+        @test make_interpretted_mode_overdub(@which rand(1)) isa Any
+        @test make_interpretted_mode_overdub(@which rand(1,2)) isa Any
     end
 end

@@ -1,12 +1,12 @@
-using Pkg
-pkg"activate ."
+using MixedModeDebugger
 
-using JuliaInterpreter
-
+function foo(x)
+    z = 0
+    for ii in 1:10
+        z+=ii
+    end
+    y = sum((x, z, 11))
+    return y
+end
 @breakpoint sum((1,2,3))
-
-push!(
-JuliaInterpreter.breakpoint_update_hooks
-
-
-JuliaInterpreter.breakpoint_update_hooks
+@run_mixedmode(foo(10))

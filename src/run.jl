@@ -1,8 +1,7 @@
 
 macro run_mixedmode(expr)
-    #qualify_calls!(expr, __module__)  # TODO Fix this
     quote
-        thunk()=$(expr)
+        thunk()=$(esc(expr))
         Cassette.recurse(MixModeDebugCtx(), thunk)
     end
 end

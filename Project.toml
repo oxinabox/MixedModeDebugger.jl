@@ -6,7 +6,6 @@ version = "0.1.0"
 [deps]
 Cassette = "7057c7e9-c182-5462-911a-8362d720325c"
 Debugger = "31a5f54b-26ea-5ae9-a837-f05ce5417438"
-
 JuliaInterpreter = "aa1ae85d-cabe-5617-a682-6adf51b2e16a"
 MagneticReadHead = "63dd013e-5414-5e51-b21a-a24e12ed54cf"
 Mocking = "78c3b35d-d492-501b-9361-3d52fe80e533"
@@ -17,8 +16,8 @@ Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 julia = "1.3"
 
 [extras]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
 test = ["Test", "InteractiveUtils"]
