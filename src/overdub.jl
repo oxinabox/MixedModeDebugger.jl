@@ -11,10 +11,13 @@ function make_overdub(make_body, ::Type{Ctx}, f::F, sig::Tuple) where {Ctx, F}
 
     foreach(sig) do T
         T_uw = Base.unwrap_unionall(T)
+
         name = gensym()
         Core.println(T_uw)
         Core.println(typeof(T_uw))
-        if T_uw.name.name === :Vararg
+        if T_uw isa TypeVar
+            T = T_uw
+        elseif T_uw.name.name === :Vararg
             if T isa UnionAll && T.body isa UnionAll  # Vararg{T, N} where {T, N}.
                 T = Vararg{Any}
             end
