@@ -9,4 +9,4 @@ function foo(x)
     return y
 end
 @breakpoint sum((1,2,3))
-@run_mixedmode(foo(10))
+@run_mixedmode(Main.foo(10))

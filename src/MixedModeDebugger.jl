@@ -1,14 +1,10 @@
 module MixedModeDebugger
 
+using Compat
 using Cassette
 using JuliaInterpreter: JuliaInterpreter, BreakpointSignature, BreakpointRef
 using JuliaInterpreter: Frame, enter_call, get_return
 
-# we use Mocking for `combine_def` (which is better than the one in MacroTools.jl)
-# https://github.com/invenia/Mocking.jl/blob/master/src/expr.jl
-using Mocking
-
-#using MagneticReadHead
 using Debugger
 
 #=============== Exports ==================================================#
@@ -19,13 +15,22 @@ using JuliaInterpreter: @bp, @breakpoint, breakpoint
 export @breakpoint, breakpoint
 #==========================================================================#
 
-function __init__()
-    push!(JuliaInterpreter.breakpoint_update_hooks, breakpoint_hook)
-end
-
 Cassette.@context MixModeDebugCtx
 include("reflection_utils.jl")
 include("run.jl")
-include("overdub.jl")
+include("make_overdub.jl")
+#include("remove_overdub.jl")
 include("hooking.jl")
+
+#==========================================================================#
+function __init__()
+    # Get any breakpoints that were already defined.
+    for bp in JuliaInterpreter._breakpoints
+        make_interpretted_mode_overdub(bp)
+    end
+
+    # Add hook to get any that will be defined later
+    push!(JuliaInterpreter.breakpoint_update_hooks, breakpoint_hook)
+end
+
 end # module
