@@ -19,7 +19,7 @@ Cassette.@context MixModeDebugCtx
 include("reflection_utils.jl")
 include("run.jl")
 include("make_overdub.jl")
-#include("remove_overdub.jl")
+include("remove_overdub.jl")
 include("hooking.jl")
 
 #==========================================================================#
