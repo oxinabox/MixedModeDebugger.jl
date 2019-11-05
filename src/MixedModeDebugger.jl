@@ -2,7 +2,7 @@ module MixedModeDebugger
 
 using Compat
 using Cassette
-using JuliaInterpreter: JuliaInterpreter, BreakpointSignature, BreakpointRef
+using JuliaInterpreter: JuliaInterpreter, BreakpointSignature, BreakpointRef, on_breakpoints_updated
 using JuliaInterpreter: Frame, enter_call, get_return
 
 using Debugger
@@ -30,7 +30,7 @@ function __init__()
     end
 
     # Add hook to get any that will be defined later
-    push!(JuliaInterpreter.breakpoint_update_hooks, breakpoint_hook)
+    on_breakpoints_updated(breakpoint_hook)
 end
 
 end # module
