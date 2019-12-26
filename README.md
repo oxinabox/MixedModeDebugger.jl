@@ -73,9 +73,9 @@ With the following notes/exceptions:
 
 ## Performance
 
-<img src="https://raw.githubusercontent.com/oxinabox/MagneticReadHead.jl/e26d82d1bec92eb8484f667e8174019cbefba368/JuliaCon2019/benchmark.png" width="420"/>
+<img src="https://user-images.githubusercontent.com/5127634/71474059-ac43e400-27d1-11ea-9f42-24d9cb43fe70.png" width="420"/>
 <sub>
-**Figure:** Run-time performance of JuliaDebugger vs MagneticReadHead, vs Native on the `summer` benchmark.
+ <b>Figure:</b> Run-time performance of JuliaDebugger vs MagneticReadHead, vs Native on the `summer` benchmark.
 With no breakpoints set.
 Note that on this task MixedModeDebugger performs exactly the same as Native, as there are no breakpoints set.
 </sub>
