@@ -51,12 +51,10 @@ Under-the-hood: when MixedModeDebugger.jl switches to interpreted-mode it litera
 ### Installation:
 This package is still experimental, and so is not registered.
 It may even be upstreamed directly into JuliaDebugger at some point.
-Currently, it requires the [`ox/hooks` branch of JuliaInterpreter](https://github.com/JuliaDebug/JuliaInterpreter.jl/pull/341)
 
 Installation is thus via:
 ```
-pkg> add https://github.com/oxinabox/JuliaInterpreter.jl.git#ox/hooks https://github.com/oxinabox/MixedModeDebug
-ger.jl.git
+pkg> add https://github.com/oxinabox/MixedModeDebugger.jl.git
 ```
 
 Note: this package requires Julia 1.3+ as it relies on the fix to the #265 issue for Cassette.
